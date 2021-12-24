@@ -7,13 +7,13 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         x:Class="TextEditor.MainWindow"
         mc:Ignorable="d"
-        Title="Текстовые редактор" Height="750" Width="800">
+        Title="Текстовый редактор" Height="750" Width="800">
     <DockPanel Margin="0">
         <Menu DockPanel.Dock="Top" FontSize="15px" Padding="0px 10px" Background="white" FontFamily="Roboto">
             <MenuItem Header="Файл">
                 <MenuItem Header="Создать" />
                 <MenuItem Header="Открыть" />
-                <MenuItem Header="Сохранить" />
+                <MenuItem Header="Сохранить" Click="Save_Executed" />
                 <MenuItem Header="Сохранить как.." />
             </MenuItem>
             <MenuItem Header="О программе" />
@@ -138,7 +138,7 @@
             </Button>
             <Button 
                 x:Name="JustifyAligmentButton"
-                ToolTip="Выравнить по правому краю"
+                ToolTip="Выравнить по ширине"
                 Click="JustifyAligmentClick"
                 BorderThickness="0"
                 Background="white"
@@ -153,11 +153,47 @@
                 <Image Source="/icon/textalign-justify.png" Width="23px"/>
             </Button>
             <Separator Margin="7px 0" Background="#c6c6c6" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Height="15px" />
+
+            <Button 
+                ToolTip="Создать маркированный список"
+                Click="CreateListClick"
+                BorderThickness="0"
+                Tag="Disc"
+                Background="white"
+                Width="25px"
+                Height="25px"
+                Margin="6px 0 6px 0">
+                <Button.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="3"/>
+                    </Style>
+                </Button.Resources>
+                <Image Source="/icon/textlist_dots.png" Width="23px"/>
+            </Button>
+            <Button 
+                ToolTip="Создать нумерованный список"
+                Click="CreateListClick"
+                BorderThickness="0"
+                Tag="Decimal"
+                Background="white"
+                Width="25px"
+                Height="25px"
+                Margin="6px 0 6px 0">
+                <Button.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="3"/>
+                    </Style>
+                </Button.Resources>
+                <Image Source="/icon/textlist_numbers.png" Width="23px"/>
+            </Button>
+
+            <Separator Margin="7px 0" Background="#c6c6c6" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Height="15px" />
             <Button 
                 x:Name="BindLinkButton"
                 Click="BindLinkButtonClick"
                 BorderThickness="0" 
                 Background="white" 
+                ToolTip="Ссылка на интернет-ресурс"
                 Width="25px" 
                 Height="25px" 
                 Margin="6px 0 6px 0">
@@ -212,12 +248,13 @@
                     MouseLeave="HiddenActionColorPicker"/>
             </Canvas>
         </WrapPanel>
-        <RichTextBox 
+        <xctk:RichTextBox 
             Padding="20px 10px 20px 10px"
             BorderThickness="0"
             x:Name="RichEditor"
             SelectionChanged="RichEditorSelection"
-            SpellCheck.IsEnabled="False">
+            SpellCheck.IsEnabled="False"
+            ScrollViewer.VerticalScrollBarVisibility="Auto">
             <RichTextBox.Resources>
                 <Style TargetType="{x:Type Paragraph}">
                     <Setter Property="Margin" Value="0" />
@@ -231,6 +268,7 @@
                     <Run Text="But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness."/>
                 </Paragraph>
             </FlowDocument>
-        </RichTextBox>
+        </xctk:RichTextBox>
     </DockPanel>
 </Window>
+

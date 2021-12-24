@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,11 +14,13 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Xceed.Wpf.Toolkit;    
 
 namespace TextEditor
 {
     public partial class MainWindow : Window
     {
+        
         public MainWindow()
         {
             InitializeComponent();
@@ -82,6 +86,18 @@ namespace TextEditor
             }
         }
 
+        private void Save_Executed(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog dlg = new SaveFileDialog();
+            dlg.Filter = "Rich Text Format (*.rtf)|*.rtf|All files (*.*)|*.*";
+            if (dlg.ShowDialog() == true)
+            {
+                FileStream fileStream = new FileStream(dlg.FileName, FileMode.Create);
+                TextRange range = new TextRange(RichEditor.Document.ContentStart, RichEditor.Document.ContentEnd);
+                range.Save(fileStream, DataFormats.Rtf);
+            }
+        }
+
         private void BackgroundButtonClick(object sender, MouseButtonEventArgs e)
         {
             /*if (e.LeftButton == MouseButtonState.Pressed)
@@ -139,20 +155,53 @@ namespace TextEditor
             RichEditor.Selection.ApplyPropertyValue(Paragraph.TextAlignmentProperty, TextAlignment.Justify);
         }
 
+        private static List RenderList(string type = "none", string[] content = null)
+        {
+            List listWarp = new List();
+            listWarp.MarkerStyle = (type == "Disc") ? TextMarkerStyle.Disc : (type == "Decimal") ? TextMarkerStyle.Decimal : TextMarkerStyle.None;
+            foreach (string line in content)
+            {
+                listWarp.ListItems.Add(new ListItem(new Paragraph(new Run(line))));
+            }
+            return listWarp;
+        }
+
+        private void CreateListClick(object sender, RoutedEventArgs e)
+        {
+            string Type = (sender as Button).Tag.ToString();
+            string content = RichEditor.Selection.Text ?? "...";
+            string[] selectedText = content.Split('\n');
+            RichEditor.Document.Blocks.Add(RenderList(Type, selectedText));
+
+            RichEditor.Selection.Text = "";
+        }
+
         private void BindLinkButtonClick(object sender, RoutedEventArgs e)
         {
-            var paragraph = new Paragraph();
+            /*var paragraph = new Paragraph();
             var text = new Run();
             text.Text = "новый абзац";
             paragraph.Inlines.Add(text);
             RichEditor.Document.Blocks.Add(paragraph);
             RichEditor.Focus();
-            RichEditor.ScrollToEnd();
+            RichEditor.ScrollToEnd();*/
+            /*string text = RichEditor.Selection.Text;
+            Run element = new Run(text);
+            Hyperlink h = new Hyperlink(element);
+            h.Click += new RoutedEventHandler(h_Click);
+            Paragraph para = new Paragraph();
+            FlowDocument fd = new FlowDocument();
+            para.Inlines.Add(h);
+            para.Inlines.Add("Last line.");
+            fd.Blocks.Add(para); */
+            UrlWindow getLink = new UrlWindow();
+            getLink.ShowDialog();
+            System.Windows.MessageBox.Show(getLink.Url);
         }
 
-        private void cp_SelectedColorChanged_1(object sender, RoutedPropertyChangedEventArgs<Color?> e)
+        void h_Click(object sender, RoutedEventArgs e)
         {
-
+            TextRange documentTextRange = new TextRange(RichEditor.Document.ContentStart, RichEditor.Document.ContentEnd);
         }
     }
 }

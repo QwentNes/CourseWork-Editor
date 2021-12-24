@@ -1,0 +1,23 @@
+﻿<Window x:Class="DesingCode.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DesingCode"
+        mc:Ignorable="d"
+        Title="-dev" MinHeight="660" MinWidth="960" WindowStyle="None">
+    <DockPanel>
+        <DockPanel DockPanel.Dock="Top" Height="55" Background="White">
+            <StackPanel HorizontalAlignment="Left">
+                <Button>Button 1</Button>
+            </StackPanel>
+        </DockPanel>
+        <DockPanel DockPanel.Dock="Right" HorizontalAlignment="Stretch">
+            <Border BorderThickness="0,0,0,2" BorderBrush="DarkSlateGray" DockPanel.Dock="top">
+                <StackPanel Background="#f0f6fa">
+                
+                </StackPanel>
+            </Border>
+        </DockPanel>
+    </DockPanel>
+</Window>
