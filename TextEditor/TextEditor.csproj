@@ -9,6 +9,7 @@
 	<ItemGroup>
 		<None Remove="icon\background.png" />
 		<None Remove="icon\Header\getlink.png" />
+		<None Remove="icon\Header\minIcon.png" />
 		<None Remove="icon\marker.png" />
 		<None Remove="icon\marker1.png" />
 		<None Remove="icon\paperclip.png" />
@@ -33,6 +34,9 @@
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</Resource>
 		<Resource Include="icon\Header\getlink.png">
+		  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="icon\Header\minIcon.png">
 		  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</Resource>
 		<Resource Include="icon\marker1.png">

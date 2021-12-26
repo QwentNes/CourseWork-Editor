@@ -7,19 +7,19 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         x:Class="TextEditor.MainWindow"
         mc:Ignorable="d"
-        Title="Текстовый редактор" Height="700" Width="800">
+        Title="Текстовый редактор" MinHeight="700" MinWidth="800" Height="700" Width="800" Icon="icon/Header/minicon.png">
     <DockPanel Margin="0">
-        <Menu DockPanel.Dock="Top" FontSize="15px" Padding="0px 10px" Background="white" FontFamily="Roboto">
-            <MenuItem Header="Файл">
-                <MenuItem Header="Создать" />
-                <MenuItem Header="Открыть" />
-                <MenuItem Header="Сохранить" Click="Save_Executed" />
-                <MenuItem Header="Сохранить как.." />
+        <Menu DockPanel.Dock="Top" Padding="20px 5px 20px 4px" FontSize="14px" Background="#F1F1EF" FontFamily="Roboto">
+            <MenuItem Header="Файл" Padding="0">
+                <MenuItem Header="Создать" Click="CreateFile"/>
+                <MenuItem Header="Открыть" Click="OpenFile"/>
+                <MenuItem Header="Сохранить" Click="SaveExistingFile" />
+                <MenuItem Header="Сохранить как.." Click="SaveFileAs" />
             </MenuItem>
-            <MenuItem Header="О программе" />
+            <MenuItem Click="AboutProgramm" Header="О программе" Padding="0" Margin="23px 0 0 0" />
         </Menu>
         <WrapPanel Margin="20px 10px 20px 2px" DockPanel.Dock="Top">
-                    <ToggleButton 
+            <ToggleButton 
                         Click="ShowParamTextSelection"
                         x:Name="ShowParamText"
                         ToolTip="Изменить текст"
@@ -31,191 +31,191 @@
                     </Style>
                 </ToggleButton.Resources>
                 <Image Source="icon/text.png" Width="23px"/>
-                    </ToggleButton>
-                    <Separator Margin="7px 0" Background="#b3b3b3" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Height="17px" />
-                    <ToggleButton 
+            </ToggleButton>
+            <Separator Margin="7px 0" Background="#b3b3b3" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Height="17px" />
+            <ToggleButton 
                 x:Name="boldButton"
                 Command="EditingCommands.ToggleBold"
                 CommandTarget="{Binding ElementName=RichEditor}"
                         Margin="9px 0 0 0"
                 ToolTip="Жирный текст (Ctrl + B)"
                  Style="{DynamicResource MenuToggleBtn}">
-                        <ToggleButton.Resources>
-                            <Style TargetType="{x:Type Border}">
-                                <Setter Property="CornerRadius" Value="3.5, 0, 0, 3.5"/>
-                            </Style>
-                        </ToggleButton.Resources>
-                        <Image Source="/icon/text-bold.png" Width="23px"/>
-                    </ToggleButton>
-                    <ToggleButton 
+                <ToggleButton.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="3.5, 0, 0, 3.5"/>
+                    </Style>
+                </ToggleButton.Resources>
+                <Image Source="/icon/text-bold.png" Width="23px"/>
+            </ToggleButton>
+            <ToggleButton 
                 x:Name="ItalicButton"
                 Command="EditingCommands.ToggleItalic"
                 CommandTarget="{Binding ElementName=RichEditor}"
                 ToolTip="Крусивный текст (Ctrl + I)"
                  Style="{DynamicResource MenuToggleBtn}"
-                Margin="0">
-                        <ToggleButton.Resources>
-                            <Style TargetType="{x:Type Border}">
-                                <Setter Property="CornerRadius" Value="0"/>
-                            </Style>
-                        </ToggleButton.Resources>
-                        <Image Source="/icon/text-italic.png" Width="23px"/>
-                    </ToggleButton>
-                    <ToggleButton 
+                Margin="0" Cursor="Hand">
+                <ToggleButton.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="0"/>
+                    </Style>
+                </ToggleButton.Resources>
+                <Image Source="/icon/text-italic.png" Width="23px"/>
+            </ToggleButton>
+            <ToggleButton 
                 x:Name="UnderlineButton"
                 Command="EditingCommands.ToggleUnderline"
                 CommandTarget="{Binding ElementName=RichEditor}"
                 ToolTip="Подчеркнутый текст (Ctrl + U)"
                  Style="{DynamicResource MenuToggleBtn}"
                 Margin="0px 0 9px 0">
-                        <ToggleButton.Resources>
-                            <Style TargetType="{x:Type Border}">
-                                <Setter Property="CornerRadius" Value="0, 3.5, 3.5, 0"/>
-                            </Style>
-                        </ToggleButton.Resources>
-                        <Image Source="/icon/text-line.png" Width="23px"/>
-                    </ToggleButton>
+                <ToggleButton.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="0, 3.5, 3.5, 0"/>
+                    </Style>
+                </ToggleButton.Resources>
+                <Image Source="/icon/text-line.png" Width="23px"/>
+            </ToggleButton>
             <Separator Margin="7px 0" Background="#b3b3b3" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Height="17px" />
-                    <Button
+            <Button
                 x:Name="LeftAligmentButton"
                 ToolTip="Выравнить по левому краю"
                 Click="LeftAligmentClick"
                 Style="{DynamicResource MenuBtn}"
                 Margin="9px 0 0px 0">
-                        <Button.Resources>
-                            <Style TargetType="{x:Type Border}">
-                                <Setter Property="CornerRadius" Value="3.5, 0, 0, 3.5"/>
-                            </Style>
-                        </Button.Resources>
-                        <Image Source="/icon/textalign-left.png" Width="23px"/>
-                    </Button>
-                    <Button 
+                <Button.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="3.5, 0, 0, 3.5"/>
+                    </Style>
+                </Button.Resources>
+                <Image Source="/icon/textalign-left.png" Width="23px"/>
+            </Button>
+            <Button 
                 x:Name="CenterAligmentButton"
                 ToolTip="Выравнить по центру"
                 Click="CenterAligmentClick"
                 Style="{DynamicResource MenuBtn}"
                 Margin="0px 0 0px 0">
-                        <Button.Resources>
-                            <Style TargetType="{x:Type Border}">
-                                <Setter Property="CornerRadius" Value="0"/>
-                            </Style>
-                        </Button.Resources>
-                        <Image Source="/icon/textalign-center.png" Width="23px"/>
-                    </Button>
-                    <Button 
+                <Button.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="0"/>
+                    </Style>
+                </Button.Resources>
+                <Image Source="/icon/textalign-center.png" Width="23px"/>
+            </Button>
+            <Button 
                 x:Name="RightAligmentButton"
                 ToolTip="Выравнить по правому краю"
                 Click="RightAligmentClick"
                 Style="{DynamicResource MenuBtn}"
                 Margin="0px 0 0px 0">
-                        <Button.Resources>
-                            <Style TargetType="{x:Type Border}">
-                                <Setter Property="CornerRadius" Value="0"/>
-                            </Style>
-                        </Button.Resources>
-                        <Image Source="/icon/textalign-right.png" Width="23px"/>
-                    </Button>
-                    <Button 
+                <Button.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="0"/>
+                    </Style>
+                </Button.Resources>
+                <Image Source="/icon/textalign-right.png" Width="23px"/>
+            </Button>
+            <Button 
                 x:Name="JustifyAligmentButton"
                 ToolTip="Выравнить по ширине"
                 Click="JustifyAligmentClick"
                 Style="{DynamicResource MenuBtn}"
                 Margin="0px 0 9px 0">
-                        <Button.Resources>
-                            <Style TargetType="{x:Type Border}">
-                                <Setter Property="CornerRadius" Value="0, 3.5, 3.5, 0"/>
-                            </Style>
-                        </Button.Resources>
-                        <Image Source="/icon/textalign-justify.png" Width="23px"/>
-                    </Button>
-                    <Separator Margin="7px 0" Background="#b3b3b3" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Height="17px" />
-                    <Button 
+                <Button.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="0, 3.5, 3.5, 0"/>
+                    </Style>
+                </Button.Resources>
+                <Image Source="/icon/textalign-justify.png" Width="23px"/>
+            </Button>
+            <Separator Margin="7px 0" Background="#b3b3b3" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Height="17px" />
+            <Button 
                 ToolTip="Создать маркированный список"
                 Click="CreateListClick"
                 BorderThickness="1"
                 Tag="Disc"
                 Style="{DynamicResource MenuBtn}"
                 Margin="9px 0 0px 0">
-                        <Button.Resources>
-                            <Style TargetType="{x:Type Border}">
-                                <Setter Property="CornerRadius" Value="3.5, 0, 0, 3.5"/>
-                            </Style>
-                        </Button.Resources>
-                        <Image Source="/icon/textlist_dots.png" Width="23px"/>
-                    </Button>
-                    <Button 
+                <Button.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="3.5, 0, 0, 3.5"/>
+                    </Style>
+                </Button.Resources>
+                <Image Source="/icon/textlist_dots.png" Width="23px"/>
+            </Button>
+            <Button 
                 ToolTip="Создать нумерованный список"
                 Click="CreateListClick"
                 BorderThickness="1"
                 Tag="Decimal"
                 Style="{DynamicResource MenuBtn}"
                 Margin="0px 0 9px 0">
-                        <Button.Resources>
-                            <Style TargetType="{x:Type Border}">
-                                <Setter Property="CornerRadius" Value="0, 3.5, 3.5, 0"/>
-                            </Style>
-                        </Button.Resources>
-                        <Image Source="/icon/textlist_numbers.png" Width="23px"/>
-                    </Button>
-                    <Separator Margin="7px 0" Background="#b3b3b3" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Height="17px" />
-                    <Button 
+                <Button.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="0, 3.5, 3.5, 0"/>
+                    </Style>
+                </Button.Resources>
+                <Image Source="/icon/textlist_numbers.png" Width="23px"/>
+            </Button>
+            <Separator Margin="7px 0" Background="#b3b3b3" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Height="17px" />
+            <Button 
                 x:Name="BindLinkButton"
                 Click="BindLinkButtonClick"
                Style="{DynamicResource MenuBtn}"
                 ToolTip="Ссылка на интернет-ресурс"
                 Margin="9px 0 0px 0">
-                        <Button.Resources>
-                            <Style TargetType="{x:Type Border}">
-                                <Setter Property="CornerRadius" Value="3"/>
-                            </Style>
-                        </Button.Resources>
-                        <Image Source="/icon/paperclip.png" Width="20px"/>
-                    </Button>
-                </WrapPanel>
-        <WrapPanel Panel.ZIndex="2" Margin="20px 10px 20px 10px" DockPanel.Dock="Top" x:Name="NavBarParamText" Visibility="Visible" Height="35">
-                    <ComboBox VerticalContentAlignment="Center" VerticalAlignment="Center"  Name="FontFamilyBox" Margin="0 0 15px 0" Width="150" Height="29px" SelectionChanged="FontFamilySelection" />
-                    <ComboBox VerticalContentAlignment="Center" VerticalAlignment="Center" Name="FontSizeBox" Width="55" Height="29px" SelectionChanged="FontSizeSelection" />
-                    <Button 
+                <Button.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="3"/>
+                    </Style>
+                </Button.Resources>
+                <Image Source="/icon/paperclip.png" Width="20px"/>
+            </Button>
+        </WrapPanel>
+        <WrapPanel Panel.ZIndex="2" Margin="20px 10px 20px 10px" DockPanel.Dock="Top" x:Name="NavBarParamText" Visibility="Hidden" Height="0">
+            <ComboBox VerticalContentAlignment="Center" VerticalAlignment="Center"  Name="FontFamilyBox" Margin="0 0 15px 0" Width="150" Height="29px" SelectionChanged="FontFamilySelection" />
+            <ComboBox VerticalContentAlignment="Center" VerticalAlignment="Center" Name="FontSizeBox" Width="55" Height="29px" SelectionChanged="FontSizeSelection" />
+            <Button 
                 x:Name="fontColorButton"
                 PreviewMouseDown="СhooseСolorClick"
                 Tag="font"
                 ToolTip="Цвет текста"
                 Style="{DynamicResource MenuBtn}"
                 Margin="15px 0 0px 0" Cursor="Hand">
-                        <Button.Resources>
-                            <Style TargetType="{x:Type Border}">
-                                <Setter Property="CornerRadius" Value="3"/>
-                            </Style>
-                        </Button.Resources>
-                        <Image Source="/icon/marker1.png" Width="23px"/>
-                    </Button>
-                    <Button 
+                <Button.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="3"/>
+                    </Style>
+                </Button.Resources>
+                <Image Source="/icon/marker1.png" Width="23px"/>
+            </Button>
+            <Button 
                 x:Name="backgroundColorButton"
                 PreviewMouseDown="СhooseСolorClick"
                 Tag="background"
                 ToolTip="Фон текста"
                 Style="{DynamicResource MenuBtn}"
                 Margin="15px 0 0px 0" Cursor="Hand">
-                        <Button.Resources>
-                            <Style TargetType="{x:Type Border}">
-                                <Setter Property="CornerRadius" Value="3"/>
-                            </Style>
-                        </Button.Resources>
-                        <Image Source="/icon/background.png" Width="23px"/>
-                    </Button>
-                    <Canvas 
+                <Button.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="3"/>
+                    </Style>
+                </Button.Resources>
+                <Image Source="/icon/background.png" Width="23px"/>
+            </Button>
+            <Canvas 
                 x:Name="colorPickerBlock"
                 Margin="-65px 25px 0px 0px"
                 Visibility="Hidden">
-                        <xctk:ColorCanvas 
+                <xctk:ColorCanvas 
                     x:Name="colorPicker"
                     SelectedColorChanged="ColorPickerSelect"
                     MouseLeave="HiddenActionColorPicker"/>
-                    </Canvas>
-                </WrapPanel>
+            </Canvas>
+        </WrapPanel>
         <xctk:RichTextBox 
-            Padding="20px 10px 20px 10px"
             BorderThickness="0"
+            Padding="20px 10px 20px 10px"
             x:Name="RichEditor"
             IsReadOnly="False" 
             IsDocumentEnabled="True"

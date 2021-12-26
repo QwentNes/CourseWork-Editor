@@ -21,6 +21,7 @@ namespace TextEditor
 {
     public partial class MainWindow : Window
     {
+        private Dictionary<string, string> fileStream = new Dictionary<string, string>();
         private string fontColor = "#fff";
         private string backgroundColor = "#fff";
         private string colorSelection = "font";
@@ -64,23 +65,12 @@ namespace TextEditor
             if (NavBarParamText.Visibility == Visibility.Hidden)
             {
                 NavBarParamText.Visibility = Visibility.Visible;
-                NavBarParamText.Height = 25;
+                NavBarParamText.Height = 35;
             }
             else
             {
                 NavBarParamText.Visibility = Visibility.Hidden;
                 NavBarParamText.Height = 0;
-            }
-        }
-        private void Save_Executed(object sender, RoutedEventArgs e)
-        {
-            SaveFileDialog dlg = new SaveFileDialog();
-            dlg.Filter = "Rich Text Format (*.rtf)|*.rtf|All files (*.*)|*.*";
-            if (dlg.ShowDialog() == true)
-            {
-                FileStream fileStream = new FileStream(dlg.FileName, FileMode.Create);
-                TextRange range = new TextRange(RichEditor.Document.ContentStart, RichEditor.Document.ContentEnd);
-                range.Save(fileStream, DataFormats.Rtf);
             }
         }
         private void СhooseСolorClick(object sender, MouseButtonEventArgs e)
@@ -92,8 +82,8 @@ namespace TextEditor
                 RichEditor.Selection.ApplyPropertyValue(type ? TextElement.ForegroundProperty : TextElement.BackgroundProperty, type ? this.fontColor : this.backgroundColor);
             }
             else if (e.RightButton == MouseButtonState.Pressed)
-            { 
-                colorPickerBlock.Margin = type ? new Thickness(-65, 25, 0, 0) : new Thickness(-25, 25, 0, 0);
+            {
+                colorPickerBlock.Margin = type ? new Thickness(-78, 35, 0, 0) : new Thickness(-32, 35, 0, 0);
                 this.colorSelection = type ? "font" : "background";
                 colorPickerBlock.Visibility = Visibility.Visible;
                 colorPicker.SelectedColor = type ? (Color)ColorConverter.ConvertFromString(this.fontColor) : (Color)ColorConverter.ConvertFromString(this.backgroundColor);
@@ -116,7 +106,7 @@ namespace TextEditor
         private void ColorPickerSelect(object sender, RoutedPropertyChangedEventArgs<Color?> e)
         {
             string colorByHex = colorPicker.SelectedColor.ToString() == "" ? "#fff" : colorPicker.SelectedColor.ToString();
-            if(this.colorSelection == "font")
+            if (this.colorSelection == "font")
             {
                 this.fontColor = colorByHex;
                 fontColorButton.Background = this.ColorFormHexToRGB(colorByHex);
@@ -167,7 +157,7 @@ namespace TextEditor
                 RichEditor.Selection.Text = "";
                 TextRange range = new TextRange(RichEditor.Selection.Start, RichEditor.Selection.End);
                 Paragraph refPara = range.Start.Paragraph;
-                if(refPara == null)
+                if (refPara == null)
                 {
                     RichEditor.Document.Blocks.Add(new Paragraph());
                     RichEditor.Document.Blocks.InsertAfter(RichEditor.Document.Blocks.FirstBlock, RenderList(Type, selectedText));
@@ -217,6 +207,84 @@ namespace TextEditor
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
             Process.Start("explorer.exe", e.Uri.AbsoluteUri);
+        }
+        private void SaveFileAs(object sender, RoutedEventArgs e)
+        {
+            this.SaveAs();
+        }
+        private void SaveExistingFile(object sender, RoutedEventArgs e)
+        {
+            if (this.fileStream.Count > 0)
+            {
+                FileStream fileStream = new FileStream(this.fileStream["FileName"], FileMode.Create);
+                TextRange range = new TextRange(RichEditor.Document.ContentStart, RichEditor.Document.ContentEnd);
+                switch (Convert.ToInt32(this.fileStream["Method"]))
+                {
+                    case 1:
+                        range.Save(fileStream, DataFormats.Rtf);
+                        break;
+                    case 2:
+                        range.Save(fileStream, DataFormats.Text);
+                        break;
+                }
+                return;
+            }
+            this.SaveAs();
+
+        }
+        private void OpenFile(object sender, RoutedEventArgs e)
+        {
+            this.Open();
+        }
+        private void CreateFile(object sender, RoutedEventArgs e)
+        {
+            this.fileStream.Clear();
+            RichEditor.Clear();
+        }
+        private void AboutProgramm(object sender, RoutedEventArgs e)
+        {
+            System.Windows.MessageBox.Show("Курсовая работа по языкам программирования Королева Егора 20КБ РЗПО-1", "О программе", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+        private void SaveAs()
+        {
+            SaveFileDialog dlg = new SaveFileDialog();
+            dlg.Filter = "Rich Text Format (*.rtf)|*.rtf| текстовый файл (*.txt) | *.txt";
+            if (dlg.ShowDialog() == true)
+            {
+                FileStream fileStream = new FileStream(dlg.FileName, FileMode.Create);
+                TextRange range = new TextRange(RichEditor.Document.ContentStart, RichEditor.Document.ContentEnd);
+                switch (dlg.FilterIndex)
+                {
+                    case 1:
+                        range.Save(fileStream, DataFormats.Rtf);
+                        break;
+                    case 2:
+                        range.Save(fileStream, DataFormats.Text);
+                        break;
+                }
+            }
+        }
+        private void Open()
+        {
+            OpenFileDialog dlg = new OpenFileDialog();
+            dlg.Filter = "Rich Text Format (*.rtf)|*.rtf| текстовый файл (*.txt) | *.txt";
+            if (dlg.ShowDialog() == true)
+            {
+                FileStream fileStream = new FileStream(dlg.FileName, FileMode.Open);
+                TextRange range = new TextRange(RichEditor.Document.ContentStart, RichEditor.Document.ContentEnd);
+                switch (dlg.FilterIndex)
+                {
+                    case 1:
+                        range.Load(fileStream, DataFormats.Rtf);
+                        break;
+                    case 2:
+                        range.Load(fileStream, DataFormats.Text);
+                        break;
+                }
+                this.fileStream.Clear();
+                this.fileStream.Add("FileName", dlg.FileName);
+                this.fileStream.Add("Method", Convert.ToString(dlg.FilterIndex));
+            }
         }
     }
 }
