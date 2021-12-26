@@ -29,6 +29,7 @@ namespace TextEditor
             AccessUrlList.ItemsSource = this.urlResource;
             AccessUrlList.SelectedIndex = 0;
         }
+
         //start_state
         public void updateUrl()
         {
@@ -62,6 +63,7 @@ namespace TextEditor
             {
                 updateChecker(false);
             }
+            this.Url = "";
         }
         public void CancelLinkClick(object sender, EventArgs e)
         {
@@ -73,5 +75,6 @@ namespace TextEditor
             this.updateUrl();
             this.Close();
         }
+
     }
 }
