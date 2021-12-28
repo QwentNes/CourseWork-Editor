@@ -39,7 +39,7 @@
                 CommandTarget="{Binding ElementName=RichEditor}"
                         Margin="9px 0 0 0"
                 ToolTip="Жирный текст (Ctrl + B)"
-                 Style="{DynamicResource MenuToggleBtn}">
+                 Style="{DynamicResource MenuToggleBtn}" Cursor="Hand">
                 <ToggleButton.Resources>
                     <Style TargetType="{x:Type Border}">
                         <Setter Property="CornerRadius" Value="3.5, 0, 0, 3.5"/>
@@ -173,8 +173,8 @@
             </Button>
         </WrapPanel>
         <WrapPanel Panel.ZIndex="2" Margin="20px 10px 20px 10px" DockPanel.Dock="Top" x:Name="NavBarParamText" Visibility="Hidden" Height="0">
-            <ComboBox VerticalContentAlignment="Center" VerticalAlignment="Center"  Name="FontFamilyBox" Margin="0 0 15px 0" Width="150" Height="29px" SelectionChanged="FontFamilySelection" />
-            <ComboBox VerticalContentAlignment="Center" VerticalAlignment="Center" Name="FontSizeBox" Width="55" Height="29px" SelectionChanged="FontSizeSelection" />
+            <ComboBox VerticalContentAlignment="Center" FontFamily="Roboto" FontSize="15" VerticalAlignment="Center"  Name="FontFamilyBox" Margin="0 0 15px 0" Width="150" Height="29px" SelectionChanged="FontFamilySelection" />
+            <ComboBox VerticalContentAlignment="Center" FontFamily="Roboto" FontSize="15" VerticalAlignment="Center" Name="FontSizeBox" Width="55" Height="29px" SelectionChanged="FontSizeSelection" />
             <Button 
                 x:Name="fontColorButton"
                 PreviewMouseDown="СhooseСolorClick"

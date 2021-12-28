@@ -41,7 +41,7 @@ namespace TextEditor
             ResultCheckLink.Foreground = status ? Brushes.Green : Brushes.Red;
         }
         public void AddressSelection(object sender, EventArgs e)
-        {
+        {   
             ResultCheckLink.Text = "";
         }
 
@@ -72,7 +72,8 @@ namespace TextEditor
         }
         public void AttachLinkClick(object sender, EventArgs e)
         {
-            this.updateUrl();
+            if (!string.IsNullOrEmpty(UrlField.Text))
+                this.updateUrl();
             this.Close();
         }
 

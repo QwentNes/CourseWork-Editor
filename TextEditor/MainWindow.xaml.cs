@@ -43,8 +43,6 @@ namespace TextEditor
             FontFamilyBox.SelectedItem = currentValue;
             currentValue = RichEditor.Selection.GetPropertyValue(Inline.FontSizeProperty);
             FontSizeBox.SelectedItem = currentValue;
-            //currentValue = RichEditor.Selection.GetPropertyValue(TextElement.ForegroundProperty);
-            //ColorButton.Background = this.ColorFormHexToRGB(currentValue.ToString());
         }
         private void FontFamilySelection(object sender, SelectionChangedEventArgs e)
         {
@@ -78,7 +76,6 @@ namespace TextEditor
             bool type = (sender as Button).Tag.ToString() == "font";
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                //string color = colorPicker.SelectedColor.ToString() == "" ? "#fff" : colorPicker.SelectedColor.ToString();
                 RichEditor.Selection.ApplyPropertyValue(type ? TextElement.ForegroundProperty : TextElement.BackgroundProperty, type ? this.fontColor : this.backgroundColor);
             }
             else if (e.RightButton == MouseButtonState.Pressed)
@@ -140,6 +137,7 @@ namespace TextEditor
         private static List RenderList(string type = "none", string[] content = null)
         {
             List listWarp = new List();
+            listWarp.FontSize = 14;
             listWarp.MarkerStyle = (type == "Disc") ? TextMarkerStyle.Disc : (type == "Decimal") ? TextMarkerStyle.Decimal : TextMarkerStyle.None;
             foreach (string line in content)
             {
@@ -150,7 +148,7 @@ namespace TextEditor
         private void CreateListClick(object sender, RoutedEventArgs e)
         {
             string Type = (sender as Button).Tag.ToString();
-            string content = RichEditor.Selection.Text ?? "...";
+            string content = string.IsNullOrEmpty(RichEditor.Selection.Text) ? "..." : RichEditor.Selection.Text;
             string[] selectedText = content.Split('\n');
             try
             {
@@ -163,7 +161,7 @@ namespace TextEditor
                     RichEditor.Document.Blocks.InsertAfter(RichEditor.Document.Blocks.FirstBlock, RenderList(Type, selectedText));
                     return;
                 }
-                RichEditor.Document.Blocks.InsertAfter(refPara, RenderList(Type, selectedText)); //error ?
+                RichEditor.Document.Blocks.InsertAfter(refPara, RenderList(Type, selectedText));
             }
             catch (InvalidOperationException)
             {
@@ -174,7 +172,6 @@ namespace TextEditor
         {
             UrlWindow getLink = new UrlWindow();
             getLink.ShowDialog();
-            System.Windows.MessageBox.Show(getLink.Url);
             if (!string.IsNullOrEmpty(getLink.Url))
             {
                 TextRange range = new TextRange(RichEditor.Selection.Start, RichEditor.Selection.End);
@@ -186,23 +183,36 @@ namespace TextEditor
             Hyperlink link = new Hyperlink(new Run(namelink));
             link.RequestNavigate += Hyperlink_RequestNavigate;
             link.NavigateUri = linkUrl;
-            link.ToolTip = "Ссылка (кликните для перехода)";
+            link.ToolTip = "Нажмите CTRL и щелкните по ссылки";
             return link;
         }
         private void ReplaceTextWithLink(Xceed.Wpf.Toolkit.RichTextBox textBox, TextRange textRange, Uri link)
         {
-            if (textRange.Start.Parent is Run)
+
+            var selected = textBox.Selection;
+            if (!selected.IsEmpty)
             {
-                var run = textRange.Start.Paragraph;
-                var runBefore = new Run(new TextRange(run.ContentStart, textRange.Start).Text);
-                var runAfter = new Run(new TextRange(textRange.End, run.ContentEnd).Text);
-                var runBody = textBox.Selection.Text;
-                textRange.Start.Paragraph.Inlines.Clear();
-                textRange.Start.Paragraph.Inlines.Add(runBefore);
-                textRange.Start.Paragraph.Inlines.Add(RenderHyperlink(runBody, link));
-                textRange.Start.Paragraph.Inlines.Add(runAfter);
-                textBox.CaretPosition = runAfter.ContentEnd;
+                var StartParText = textRange.Start.Paragraph;
+                var EndParText = textRange.End.Paragraph;
+
+                var RangeAfter = new TextRange(StartParText.ContentStart, selected.Start);
+                var RangeBefore = new TextRange(selected.End, EndParText.ContentEnd);
+                var ShellInsert = new TextRange(RangeAfter.Start, RangeBefore.End);
+
+                var streamAfter = new MemoryStream();
+                RangeAfter.Save(streamAfter, DataFormats.XamlPackage);
+                var streamBefore = new MemoryStream();
+                RangeBefore.Save(streamBefore, DataFormats.XamlPackage);
+                Hyperlink linkElement = RenderHyperlink(selected.Text, link);
+
+                ShellInsert.Text = "";
+                ShellInsert.Load(streamAfter, DataFormats.XamlPackage);
+                ShellInsert.End.Paragraph.Inlines.Add(linkElement);
+                var parent = (ShellInsert.End.Parent as Run).Parent as Paragraph;
+                var BeforePosition = new TextRange(parent.ContentEnd, parent.ContentEnd);
+                BeforePosition.Load(streamBefore, DataFormats.XamlPackage);
             }
+
         }
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
@@ -227,6 +237,7 @@ namespace TextEditor
                         range.Save(fileStream, DataFormats.Text);
                         break;
                 }
+                fileStream.Close();
                 return;
             }
             this.SaveAs();
@@ -234,16 +245,13 @@ namespace TextEditor
         }
         private void OpenFile(object sender, RoutedEventArgs e)
         {
+
             this.Open();
         }
         private void CreateFile(object sender, RoutedEventArgs e)
         {
             this.fileStream.Clear();
             RichEditor.Clear();
-        }
-        private void AboutProgramm(object sender, RoutedEventArgs e)
-        {
-            System.Windows.MessageBox.Show("Курсовая работа по языкам программирования Королева Егора 20КБ РЗПО-1", "О программе", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         private void SaveAs()
         {
@@ -282,9 +290,15 @@ namespace TextEditor
                         break;
                 }
                 this.fileStream.Clear();
+                fileStream.Close();
                 this.fileStream.Add("FileName", dlg.FileName);
                 this.fileStream.Add("Method", Convert.ToString(dlg.FilterIndex));
             }
         }
+        private void AboutProgramm(object sender, RoutedEventArgs e)
+        {
+            System.Windows.MessageBox.Show("Курсовая работа по языкам программирования Королева Егора 20КБ РЗПО-1", "О программе", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
     }
 }
